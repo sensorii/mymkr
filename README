@@ -1,0 +1,6 @@
+mymaker is a set of bash scripts that create and managage a custom development
+environment and package installation location for compiled sources.  mymaker
+makes it easy to compile specific versions of software with specific features
+enabled or disaled and installs them in a configured directory enabling a
+developer to install and use multiple versions of the same software in their
+own user space.
