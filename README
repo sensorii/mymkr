@@ -2,5 +2,21 @@ mymaker is a set of bash scripts that create and managage a custom development
 environment and package installation location for compiled sources.  mymaker
 makes it easy to compile specific versions of software with specific features
 enabled or disaled and installs them in a configured directory enabling a
-developer to install and use multiple versions of the same software in their
-own user space.
+developer to install and use multiple versions of the same software in their own
+user space.
+
+INSTALLATION:
+) Make a directory where you want packages to be installed.  Example: /x
+
+) Place the mymaker directory within your new directory.
+  Example: /x/mymaker
+  :NOTE: This step is optional, the mymaker directory can live anywhere.
+
+) Edit mymaker/mymaker.env, change MYMAKER_PREFIX to the location of your directory.
+  Example: MYMAKER_PREFIX=/x
+
+) To use the packages installed in the directory, source the environment file:
+  $ source /x/mymaker/mymaker.env
+
+) If you want automatic sourcing, put this line in your ~/.bashrc:
+  source /x/mymaker/mymaker.env
