@@ -40,6 +40,10 @@ cppintrospection
 pdsheefa
 wxWidgets
 bullet
+libshmdata
+nodejs
+switcher
+scenic2
 "
 
 test -z "$MYMAKER_PREFIX" && echo "MYMAKER_PREFIX is not set" && exit 1
@@ -50,11 +54,30 @@ test ! -d $MYMAKER_PREFIX && mkdir $MYMAKER_PREFIX
 # helper functions
 ########################################################################
 
+color_black='\E[30m'
+color_red='\E[31m'
+color_green='\E[32m'
+color_yellow='\E[33m'
+color_blue='\E[34m'
+color_magenta='\E[35m'
+color_cyan='\E[36m'
+color_white='\E[37m'
+color_off='\E[0m'
+
+notice () {
+	echo -e "${color_green}[MYMAKER NOTICE]${color_off} ${@}"
+}
+
+die () {
+	echo -e "${color_red}[MYMAKER ERROR]${color_off} ${@}"
+	exit 1
+}
+
 # $1: location in /src/ directory (usually package name)
 # $2...: all other arguments get appended to the ./configure command
 common_autotools () {
-	cd $MYMAKER_PREFIX/src/$1 || exit 1
-	make clean
+	cd $MYMAKER_PREFIX/src/$1 || die "source dir does not exist?: $MYMAKER_PREFIX/src/$1"
+	#make clean
 
 	if [ -x "./autogen.sh" ]
 	then
@@ -101,15 +124,23 @@ common_cmake() {
 
 # $1: package name
 # $2: git url
+# $3: (optional) git tag or branch to checkout
 gitsrc() {
 	if [ ! -d $MYMAKER_PREFIX/src/$1 ]
 	then
-		echo "$1 source dir does not exist, git clone'ing..."
+		notice "$1 source dir does not exist, git clone'ing..."
 		git clone $2 $MYMAKER_PREFIX/src/$1
 	else
-		echo "$1 source dir exists, git pull'ing..."
+		notice "$1 source dir exists, git pull'ing..."
 		cd $MYMAKER_PREFIX/src/$1
 		git pull
+		cd -
+	fi
+
+	if [ ! -z "$3" ]
+	then
+		cd $MYMAKER_PREFIX/src/$1
+		git checkout $3 || die "git checkout $3"
 		cd -
 	fi
 }
@@ -576,9 +607,53 @@ case $1 in
 		common_autotools $1
 		;;
 
-	# :TODO: scenic	
-	scenic)
-		echo ":TODO:"
+	########################################################################
+	# scenic
+	########################################################################
+
+	libshmdata)
+		BRANCH=develop
+		gitsrc $1 https://code.sat.qc.ca/redmine/libshmdata.git $BRANCH
+		common_autotools $1
+		notice "This package contains puredata externals.\n
+			To use them, configure pd with this path: $MYMAKER_PREFIX/lib/pd/extra"
+		;;
+
+	# scenic2 dependency, requires version <= 0.10.15
+	# following guide at: http://code.sat.qc.ca/redmine/projects/scenic2/wiki/Scenic2
+	nodejs)
+		TAG=v0.10.15
+		gitsrc $1 https://github.com/joyent/node.git $TAG
+		common_autotools $1
+		npm install -g node-gyp
+		;;
+
+	# scenic2 dependency
+	switcher)
+		BRANCH=develop
+		gitsrc $1 https://code.sat.qc.ca/redmine/switcher.git $BRANCH
+		common_autotools $1
+		;;
+
+	scenic2)
+		BRANCH=develop
+		gitsrc $1 https://code.sat.qc.ca/redmine/scenic2.git $BRANCH
+		cd $MYMAKER_PREFIX/src/$1
+		npm install -g || die "npm install failed"
+
+		git submodule init
+		git submodule update
+		cd node_modules/node-switcher
+		git checkout develop
+		node-gyp configure build || die "you probably need to edit
+			src/scenic2/node_modules/node-switcher/binding.gyp and add
+			-I/x-art/include/switcher-0.2 to cflags and -L/x-art/lib to libraries"
+
+		notice "Making starter script in bin/"
+		S="$MYMAKER_PREFIX/bin/$1"
+		D="$MYMAKER_PREFIX/src/$1"
+		echo -e "#!/bin/bash\ncd $D\nNODE_PATH=$MYMAKER_PREFIX/lib/node_modules/scenic2/node_modules node server.js" > $S
+		chmod 0755 $S
 		;;
 
 	*)
