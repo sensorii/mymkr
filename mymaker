@@ -25,6 +25,7 @@ ogre
 wgois
 PyMouse
 petri-foo
+poco-1.4.6
 poco
 python-uinput
 csound.vim
@@ -435,15 +436,20 @@ case $1 in
 		;;
 
 
-	poco)
+	poco-1.4.6)
                 # :NOTE: DO NOT use symlinks anywhere to the source, build will fail with:
 		#	 Current working directory not under $PROJECT_BASE.
 		V=1.4.6
-		SRC=http://pocoproject.org/releases/$1-$V/$1-$V.tar.gz
-		wgetsrc $1 $V $SRC
-		common_autotools $1-$V --omit=Data/ODBC,Data/MySQL --no-tests --no-samples
+		SRC=http://pocoproject.org/releases/poco-$V/poco-$V.tar.gz
+		wgetsrc poco $V $SRC
+		common_autotools poco-$V --omit=Data/ODBC,Data/MySQL --no-tests --no-samples
 		;;
 
+	poco)
+		TAG=poco-1.5.2-rc3
+		gitsrc $1 https://github.com/pocoproject/poco.git $TAG
+		common_autotools poco --omit=Data/ODBC,Data/MySQL --no-tests --no-samples
+		;;
 
 	python-uinput)
 		gitsrc $1 https://github.com/tuomasjjrasanen/python-uinput.git
