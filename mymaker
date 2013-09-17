@@ -8,6 +8,7 @@
 source ./mymaker.env
 JOBS='-j8'
 PKGS="
+codelite
 ctrl
 blue
 3DII
@@ -258,6 +259,22 @@ case $1 in
 		#gitsrc $1 neo@neoharmonix.net:~/SRC/ctrl.git
 		common_cmake $1 \
 		-D CTRL_DEPENDENCIES_DIR=$MYMAKER_PREFIX
+	;;
+
+
+	########################################################################
+	# codelite
+	# Reference: http://codelite.org/Developers/Linux
+        ########################################################################
+	codelite)
+		gitsrc $1 git://git.code.sf.net/p/codelite/codelitegit
+		common_cmake $1 \
+		-DPREFIX=$MYMAKER_PREFIX \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DENABLE_CLANG=1 \
+		-DWITH_PCH=1 \
+		-DWITH_MYSQL=1 \
+		-DGTK_USE_AUIBOOK=0
 	;;
 
 
