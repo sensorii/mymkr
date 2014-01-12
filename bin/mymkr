@@ -31,6 +31,7 @@ die () {
 	exit 1
 }
 
+die("TEST")
 
 ########################################################################
 # build/install MYMKR directory
@@ -39,7 +40,7 @@ test -z "$MYMKR_PREFIX" && die "MYMKR_PREFIX is not set"
 test ! -d $MYMKR_PREFIX && mkdir $MYMKR_PREFIX
 test ! -d $MYMKR_PREFIX/src && mkdir $MYMKR_PREFIX/src
 test ! -d $MYMKR_PREFIX/bin && mkdir $MYMKR_PREFIX/bin
-E="$MYMKR_PREFIX/env"
+E="$MYMKR_PREFIX/mymkr/env"
 touch "$E" || die "failed to create MYMKR environment"
 echo "MYMKR_PREFIX=$MYMKR_PREFIX" > $E
 echo "export MYMKR_PREFIX=\$MYMKR_PREFIX" >> $E
@@ -55,14 +56,40 @@ source $E
 
 ########################################################################
 
-#if [ ! -f $MYMKR_PREFIX/mymkr/
+D="$MYMKR_PREFIX/mymkr/"
+
+# if package has a directory, install all pkgs inside it first
+if [ -d "$D/pkgs/$1" ]
+then
+	#die (':TODO: implement package defined as directory')
+	for x in $(ls $D/pkgs/$1)
+	do
+		notice(":TODO: mk $x")
+	done
+fi
+
+# if package has an install script
+if [ -f "$D/pkgs/$1.sh" ]
+then
+	#source "$D/pkgs/$1.sh"
+	notice(":TODO: source $D/pkgs/$1.sh")
+fi
+
+# if package's install script is inside a directory
+# (indicating that the package is usually only installed as a dependency of
+# another package but still provide means to compile it directly)
+#$P=$(find $D/pkgs -type f -name $1.sh)
+#if [ ! -z "$P" ]
+#then
+#fi
+
+PKGS=$(find $D/pkgs | sed -e 's/.sh//' | sed -e "s/$D//" | uniq)
 case $1 in
 	*)
 		echo "USAGE: $0 <package>"
 		echo -e "<package> is one of:"
 		echo -e "\tclean   (cleans build related files)"
-		#for x in $PKGS; do echo -e "\t$x"; done
-		echo ':TODO: list pkgs n stuff'
+		for x in $PKGS; do echo -e "\t$x"; done
 		exit 1
 		;;
 esac
