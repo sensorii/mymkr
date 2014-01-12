@@ -1,0 +1,70 @@
+#!/bin/bash
+
+########################################################################
+# CONFIGURATION
+########################################################################
+MYMKR_PREFIX=~/.mymkr
+
+CPUS=$(cat /proc/cpuinfo | egrep "^processor" | nl | tail -n1 | cut -f 1)
+JOBS="-j$CPUS"
+
+
+########################################################################
+# helper functions
+########################################################################
+color_black='\E[30m'
+color_red='\E[31m'
+color_green='\E[32m'
+color_yellow='\E[33m'
+color_blue='\E[34m'
+color_magenta='\E[35m'
+color_cyan='\E[36m'
+color_white='\E[37m'
+color_off='\E[0m'
+
+notice () {
+	echo -e "${color_green}[MYMKR NOTICE]${color_off} ${@}"
+}
+
+die () {
+	echo -e "${color_red}[MYMKR ERROR]${color_off} ${@}"
+	exit 1
+}
+
+
+########################################################################
+# build/install MYMKR directory
+########################################################################
+test -z "$MYMKR_PREFIX" && die "MYMKR_PREFIX is not set"
+test ! -d $MYMKR_PREFIX && mkdir $MYMKR_PREFIX
+test ! -d $MYMKR_PREFIX/src && mkdir $MYMKR_PREFIX/src
+test ! -d $MYMKR_PREFIX/bin && mkdir $MYMKR_PREFIX/bin
+E="$MYMKR_PREFIX/env"
+touch "$E" || die "failed to create MYMKR environment"
+echo "MYMKR_PREFIX=$MYMKR_PREFIX" > $E
+echo "export MYMKR_PREFIX=\$MYMKR_PREFIX" >> $E
+echo "export PKG_CONFIG_PATH=\$MYMKR_PREFIX/lib/pkgconfig" >> $E
+echo "export LD_LIBRARY_PATH=\$MYMKR_PREFIX/lib" >> $E
+echo "export PATH=\$MYMKR_PREFIX/bin:\$PATH" >> $E
+echo "export MANPATH=\$MYMKR_PREFIX/share/man:/usr/share/man" >> $E
+echo "export XDG_DATA_DIRS=\$MYMKR_PREFIX/share:\$XDG_DATA_DIRS" >> $E
+echo "export PYTHONPATH=\${PYTHONPATH}:\$MYMKR_PREFIX/lib/python2.7/site-packages" >> $E
+grep "$MYMKR_PREFIX/env" ~/.bashrc || echo "source $MYMKR_PREFIX/env" >> ~/.bashrc
+source $E
+
+
+########################################################################
+
+#if [ ! -f $MYMKR_PREFIX/mymkr/
+case $1 in
+	*)
+		echo "USAGE: $0 <package>"
+		echo -e "<package> is one of:"
+		echo -e "\tclean   (cleans build related files)"
+		#for x in $PKGS; do echo -e "\t$x"; done
+		echo ':TODO: list pkgs n stuff'
+		exit 1
+		;;
+esac
+
+exit 0
