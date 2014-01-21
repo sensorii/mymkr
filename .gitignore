@@ -1,0 +1,6 @@
+*.swp
+mymkr/env
+bin/
+include/
+lib/
+src/
