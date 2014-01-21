@@ -88,8 +88,8 @@ then
 	exit 1
 fi
 
-for x in $(find $D/fetch  -mindepth 1 | egrep "\.sh$"); do source $x; done
-for x in $(find $D/common -mindepth 1 | egrep "\.sh$"); do source $x; done
+for x in $(find $D/fetch  -mindepth 1 | egrep "\.sh$"); do msg_info "sourcing $(basename $x)"; source $x; done
+for x in $(find $D/common -mindepth 1 | egrep "\.sh$"); do msg_info "sourcing $(basename $x)"; source $x; done
 
 # if package has a directory, install all pkgs inside it first
 if [ -d "$D/pkgs/$1" ]
