@@ -1,4 +1,4 @@
-echo ':NOTE: clean not implemented'
+msg_warning 'common/clean: clean not implemented'
 
 # :TODO: case should be for build type, and not package-aware
 #for x in $PKGS

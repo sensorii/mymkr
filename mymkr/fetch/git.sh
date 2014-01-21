@@ -4,10 +4,10 @@
 gitsrc() {
 	if [ ! -d $MYMKR_PREFIX/src/$1 ]
 	then
-		notice "$1 source dir does not exist, git clone'ing..."
+		msg_info "$1 source dir does not exist, git clone'ing..."
 		git clone $2 $MYMKR_PREFIX/src/$1
 	else
-		notice "$1 source dir exists, git pull'ing..."
+		msg_info "$1 source dir exists, git pull'ing..."
 		cd $MYMKR_PREFIX/src/$1
 		git pull
 		cd -
