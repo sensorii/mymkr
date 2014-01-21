@@ -10,7 +10,7 @@ JOBS="-j$CPUS"
 
 
 ########################################################################
-# helper functions
+# core functions
 ########################################################################
 color_black='\E[30m'
 color_red='\E[31m'
@@ -39,35 +39,44 @@ die () {
 	exit 1
 }
 
-
-########################################################################
 # build/install MYMKR directory
-########################################################################
-test -z "$MYMKR_PREFIX" && die "MYMKR_PREFIX is not set"
-test ! -d $MYMKR_PREFIX && mkdir $MYMKR_PREFIX
-test ! -d $MYMKR_PREFIX/src && mkdir $MYMKR_PREFIX/src
-test ! -d $MYMKR_PREFIX/bin && mkdir $MYMKR_PREFIX/bin
-E="$MYMKR_PREFIX/mymkr/env"
-if [ ! -f "$E" ]
-then
-	msg_info "MYMKR environment definition ($E) does no exist, creating"
-	touch "$E" || die "failed to create MYMKR environment"
-	echo "MYMKR_PREFIX=$MYMKR_PREFIX" > $E
-	echo "export MYMKR_PREFIX=\$MYMKR_PREFIX" >> $E
-	echo "export PKG_CONFIG_PATH=\$MYMKR_PREFIX/lib/pkgconfig" >> $E
-	echo "export LD_LIBRARY_PATH=\$MYMKR_PREFIX/lib" >> $E
-	echo "export PATH=\$MYMKR_PREFIX/bin:\$PATH" >> $E
-	echo "export MANPATH=\$MYMKR_PREFIX/share/man:/usr/share/man" >> $E
-	echo "export XDG_DATA_DIRS=\$MYMKR_PREFIX/share:\$XDG_DATA_DIRS" >> $E
-	echo "export PYTHONPATH=\${PYTHONPATH}:\$MYMKR_PREFIX/lib/python2.7/site-packages" >> $E
-	grep "$E" ~/.bashrc || echo "source $E" >> ~/.bashrc
-fi
-source $E
+mymkr_build_env ()
+{
+	test -z "$MYMKR_PREFIX" && die "MYMKR_PREFIX is not set"
+	test ! -d $MYMKR_PREFIX && mkdir $MYMKR_PREFIX
+	test ! -d $MYMKR_PREFIX/src && mkdir $MYMKR_PREFIX/src
+	test ! -d $MYMKR_PREFIX/bin && mkdir $MYMKR_PREFIX/bin
+	E="$MYMKR_PREFIX/mymkr/env"
+	if [ ! -f "$E" ]
+	then
+		msg_info "MYMKR environment definition ($E) does no exist, creating"
+		touch "$E" || die "failed to create MYMKR environment"
+		echo "MYMKR_PREFIX=$MYMKR_PREFIX" > $E
+		echo "export MYMKR_PREFIX=\$MYMKR_PREFIX" >> $E
+		echo "export PKG_CONFIG_PATH=\$MYMKR_PREFIX/lib/pkgconfig" >> $E
+		echo "export LD_LIBRARY_PATH=\$MYMKR_PREFIX/lib" >> $E
+		echo "export PATH=\$MYMKR_PREFIX/bin:\$PATH" >> $E
+		echo "export MANPATH=\$MYMKR_PREFIX/share/man:/usr/share/man" >> $E
+		echo "export XDG_DATA_DIRS=\$MYMKR_PREFIX/share:\$XDG_DATA_DIRS" >> $E
+		echo "export PYTHONPATH=\${PYTHONPATH}:\$MYMKR_PREFIX/lib/python2.7/site-packages" >> $E
+		grep "$E" ~/.bashrc || echo "source $E" >> ~/.bashrc
+	fi
+	source $E
+}
 
+# $1: a directory containing bash files to source (must be a subdirectory of mymkr/)
+mymkr_source ()
+{
+	D="$MYMKR_PREFIX/mymkr"
+	for x in $(find $D/$1 -mindepth 1 | egrep "\.sh$")
+	do
+		msg_info "source: $1/$(basename $x)"
+		source $x
+	done
+}
 
-########################################################################
 # $1: a directory of MYMKR package definitions
-get_pkgs ()
+mymkr_get_pkgs ()
 {
 	test -z "$1" && die "get_pkgs: invalid paramaters"
 	for x in $(find $1 -mindepth 1)
@@ -76,20 +85,22 @@ get_pkgs ()
 	done
 }
 
+########################################################################
+mymkr_source 'fetch'
+mymkr_source 'common'
+mymkr_build_env
 D="$MYMKR_PREFIX/mymkr"
-PKGS=$(get_pkgs "$D/pkgs/")
+PKGS=$(mymkr_get_pkgs "$D/pkgs/")
 
+# enforce proper paramaters
 if [ -z "$1" ]
 then
 	echo "USAGE: $0 <package>"
 	echo -e "<package> is one of:"
-	echo -e "\tclean   (cleans build related files)"
+	#echo -e "\tclean   (cleans build related files)"
 	for x in $PKGS; do echo -e "\t$x"; done
 	exit 1
 fi
-
-for x in $(find $D/fetch  -mindepth 1 | egrep "\.sh$"); do msg_info "sourcing $(basename $x)"; source $x; done
-for x in $(find $D/common -mindepth 1 | egrep "\.sh$"); do msg_info "sourcing $(basename $x)"; source $x; done
 
 # if package has a directory, install all pkgs inside it first
 if [ -d "$D/pkgs/$1" ]
