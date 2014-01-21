@@ -81,7 +81,7 @@ mymkr_get_pkgs ()
 	test -z "$1" && die "get_pkgs: invalid paramaters"
 	for x in $(find $1 -mindepth 1)
 	do
-		basename $x | sed -e 's/.sh//' 
+		basename $x | sed -e 's/.sh$//' 
 	done
 }
 
