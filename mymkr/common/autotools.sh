@@ -4,11 +4,17 @@ common_autotools () {
  	cd $MYMKR_PREFIX/src/$1 || die "source dir does not exist?: $MYMKR_PREFIX/src/$1"
  	#make clean
 
+ 	if [ -f 'bootstrap' ]
+ 	then
+ 		sh bootstrap || die 'bootstrap failed'
+ 	fi
+
  	if [ -x './autogen.sh' ]
  	then
  		./autogen.sh || die './autogen.sh failed'
  	fi
- 	if [ -x "./configure" ]
+
+ 	if [ -x './configure' ]
  	then
  		./configure --prefix=$MYMKR_PREFIX ${@:2} || die 'configure failed'
  		(make $JOBS && make install) || die 'make failed'

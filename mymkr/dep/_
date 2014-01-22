@@ -1,3 +1,5 @@
 autoconf
 libtool
 automake
+git
+subversion

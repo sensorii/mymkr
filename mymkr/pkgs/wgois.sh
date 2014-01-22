@@ -16,7 +16,11 @@
 # OIS, trunk version
 # :NOTE: 2013-05-18 18:56:46  To compile on Xubuntu 13.04, I had to add
 # "-lX11" to trunk/demos/Makefile.in *_LDADD
-svnsrc wgois https://wgois.svn.sourceforge.net/svnroot/wgois 
-cd $MYMKR_PREFIX/src/$1/ois/trunk || exit 1
-sh ./bootstrap || exit 1
-common_autotools $1/ois/trunk LIBS='X11'
+svnsrc wgois svn://svn.code.sf.net/p/wgois/code/
+#cd $MYMKR_PREFIX/src/$1/ois/trunk || exit 1
+#sh ./bootstrap || exit 1
+#common_autotools $1/ois/trunk LIBS='X11'
+
+#export LIBS='X11'
+export LDFLAGS='-lX11'
+common_autotools $1/ois/trunk
