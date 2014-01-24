@@ -70,7 +70,7 @@ mymkr_source ()
 	D="$MYMKR_PREFIX/mymkr"
 	for x in $(find $D/$1 -mindepth 1 | egrep "\.sh$")
 	do
-		msg_info "source: $1/$(basename $x)"
+		# msg_info "source: $1/$(basename $x)"
 		source $x
 	done
 }
@@ -116,7 +116,9 @@ fi
 if [ -f "$D/pkgs/$1.sh" ]
 then
 	msg_info "source $D/pkgs/$1.sh"
-	source "$D/pkgs/$1.sh"
+	source "$D/pkgs/$1.sh" && msg_info "success: $1"
+else
+	die "package not found: $1"
 fi
 
 # if package's install script is inside a directory

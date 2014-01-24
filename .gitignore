@@ -1,6 +1,9 @@
 *.swp
 mymkr/env
 bin/
+etc/
 include/
 lib/
+libexec/
+share/
 src/
