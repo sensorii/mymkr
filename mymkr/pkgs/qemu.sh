@@ -11,3 +11,6 @@ git submodule update --init dtc
 common_autotools $1 \
  --target-list='arm-softmmu arm-linux-user i386-softmmu arm-softmmu x86_64-softmmu' \
  --enable-sdl
+
+# this gets left out of install for some reason... needed for booting some disk images
+cp -a $MYMKR_PREFIX/src/$1/pc-bios/bios-256k.bin $MYMKR_PREFIX/share/qemu/
