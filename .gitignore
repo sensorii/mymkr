@@ -5,5 +5,7 @@ etc/
 include/
 lib/
 libexec/
+openssl/
 share/
 src/
+var/
