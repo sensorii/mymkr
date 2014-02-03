@@ -9,9 +9,9 @@ common_autotools () {
  		sh bootstrap || die 'bootstrap failed'
  	fi
 
- 	if [ -x './autogen.sh' ]
+ 	if [ -f './autogen.sh' ]
  	then
- 		./autogen.sh || die './autogen.sh failed'
+ 		sh autogen.sh || die './autogen.sh failed'
  	fi
 
  	if [ -x './configure' ]
