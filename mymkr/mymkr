@@ -85,6 +85,18 @@ mymkr_get_pkgs ()
 	done
 }
 
+# $1: package name corresponding to a package in mymkr/pkgs
+mymkr_show_doc ()
+{
+	F="$MYMKR_PREFIX/mymkr/doc/$1"
+	if [ -f $F ]
+	then
+		echo '--- :NOTES: ------------------------------------------------------------'
+		cat $F
+		echo '------------------------------------------------------------------------'
+	fi
+}
+
 ########################################################################
 mymkr_source 'fetch'
 mymkr_source 'common'
@@ -117,6 +129,7 @@ if [ -f "$D/pkgs/$1.sh" ]
 then
 	msg_info "source $D/pkgs/$1.sh"
 	source "$D/pkgs/$1.sh" && msg_info "success: $1"
+	mymkr_show_doc $1
 else
 	die "package not found: $1"
 fi
