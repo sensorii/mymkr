@@ -17,10 +17,21 @@ common_autotools () {
  	if [ -x './configure' ]
  	then
  		./configure --prefix=$MYMKR_PREFIX "${@:2}" || die 'configure failed'
- 		(make $JOBS && make install) || die 'make failed'
- 	else
- 		# for packages without a configure script (like jack_oscrolloscope)
- 		(make $JOBS && make PREFIX=$MYMKR_PREFIX install) || die 'make failed'
+	fi
+
+ 	if [ $_MAKE -eq 0 ]
+	then
+		msg_warning "skipping make"
+	else
+		make $JOBS || die 'make failed'
+	fi
+
+ 	if [ $_MAKE_INSTALL -eq 0 ]
+	then
+		msg_warning "skipping make install"
+	else
+ 		# PREFIX given again for packages without a configure script (like jack_oscrolloscope)
+		make PREFIX=$MYMKR_PREFIX install || die 'make install failed'
  	fi
 
 	return 0

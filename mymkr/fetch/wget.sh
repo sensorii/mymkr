@@ -1,30 +1,46 @@
 # $1: package name
-# $2: package version
-# $3: URL to package
-# $4: packaging postfix, defaults to "tar.gz"
-wgetsrc() {
-	if [ -z "$4" ]
+# $2: URL
+# $3: archive type - detected by default, argument enforces archive type to extract
+fetch_wget() {
+	URL=$2
+	test -z "$WGET" && _WGET='wget'
+
+	if [ -d $MYMKR_PREFIX/src/$1 ]
 	then
-		PKG='tar.gz'
+		msg_warning "source exists, considering fetched"
 	else
-		PKG=$4
-	fi
-
-	if [ ! -d $MYMKR_PREFIX/src/$1-$2 ]
-	then
 		cd $MYMKR_PREFIX/src
-		test ! -f $1-$2.$PKG && (wget $3 || exit 1)
+		PKG=$(basename $URL)
+		if [ ! -f $PKG ]
+		then
+			$WGET "$URL" || die "wget failed: $URL"
+		fi
 
-		case $PKG in
+		if [ -z "$3" ]
+		then
+			# Reference: http://stackoverflow.com/a/965072
+			#filename=$(basename "$URL")
+			extension="${PKG##*.}"
+			#A="${filename%.*}"
+		else
+			extension="$3"
+		fi
+
+		case ${extension} in
 			tgz|tar.gz)
-				tar -xzf $1-$2.$PKG || exit 1
+				tar -xzf $PKG || die "xtract archive failed"
 				;;
 
 			tbz2|tar.bz2)
-				tar -xjf $1-$2.$PKG || exit 1
+				tar -xjf $PKG || die "xtract archive failed"
 				;;
+
 			zip)
-				echo ":TODO: wgetsrc .zip" && exit 1
+				unzip $PKG || die "unzip failed"
+				;;
+
+			*)
+				die "unknown archive type: $A"
 				;;
 		esac
 	fi
