@@ -3,7 +3,12 @@
 ########################################################################
 # CONFIGURATION
 ########################################################################
-MYMKR_PREFIX=~/.mymkr
+if [ -z "${2}" ]
+then
+	MYMKR_PREFIX=~/.mymkr
+else
+	source "${2}"
+fi
 
 CPUS=$(cat /proc/cpuinfo | egrep "^processor" | nl | tail -n1 | cut -f 1)
 JOBS="-j$CPUS"
@@ -107,7 +112,8 @@ PKGS=$(mymkr_get_pkgs "$D/pkgs/")
 # enforce proper paramaters
 if [ -z "$1" ]
 then
-	echo "USAGE: $0 <package>"
+	echo "USAGE: $0 <package> [config file]"
+	echo -e "[config file] optional custom settings file"
 	echo -e "<package> is one of:"
 	#echo -e "\tclean   (cleans build related files)"
 	for x in $PKGS; do echo -e "\t$x"; done

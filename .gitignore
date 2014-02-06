@@ -1,4 +1,5 @@
 *.swp
+mymkr/conf
 mymkr/env
 bin/
 docs/
