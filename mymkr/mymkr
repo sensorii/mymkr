@@ -46,6 +46,7 @@ mymkr_build_env ()
 	test ! -d $MYMKR_PREFIX && mkdir $MYMKR_PREFIX
 	test ! -d $MYMKR_PREFIX/src && mkdir $MYMKR_PREFIX/src
 	test ! -d $MYMKR_PREFIX/bin && mkdir $MYMKR_PREFIX/bin
+	test ! -d $MYMKR_PREFIX/mymkr/env.d && mkdir $MYMKR_PREFIX/mymkr/env.d
 	E="$MYMKR_PREFIX/mymkr/env"
 	if [ ! -f "$E" ]
 	then
@@ -59,6 +60,7 @@ mymkr_build_env ()
 		echo "export MANPATH=\$MYMKR_PREFIX/share/man:/usr/share/man" >> $E
 		echo "export XDG_DATA_DIRS=\$MYMKR_PREFIX/share:\$XDG_DATA_DIRS" >> $E
 		echo "export PYTHONPATH=\${PYTHONPATH}:\$MYMKR_PREFIX/lib/python2.7/site-packages" >> $E
+		echo "for x in \$(find \$MYMKR_PREFIX/mymkr/env.d -mindepth 1 | egrep \"\\.sh$\"); do source \$x; done" >> $E
 		grep "$E" ~/.bashrc || echo "source $E" >> ~/.bashrc
 	fi
 	source $E
