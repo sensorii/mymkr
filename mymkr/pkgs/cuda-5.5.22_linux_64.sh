@@ -1,19 +1,34 @@
-# :NOTE: this has not been tested...
-msg_warning "not tested!"
-
 _EXTRACT_ARCHIVE=0
 URL='http://developer.download.nvidia.com/compute/cuda/5_5/rel/installers/cuda_5.5.22_linux_64.run'
-fetch_wget $1 $URL
+E=$(basename $URL)
+fetch_wget $E $URL
 
 # cuda installer needs gcc <= 4.7.2
-alias gcc='/usr/bin/gcc-4.6'
-alias g++='/usr/bin/g++-4.6'
+# temporarily hack gcc/g++ for this compile
+ln -s $(which gcc-4.6) $MYMKR_PREFIX/bin/gcc || die "Unable to link gcc. version 4.6 not found?"
+ln -s $(which g++-4.6) $MYMKR_PREFIX/bin/g++ || die "Unable to link g++. version 4.6 not found?"
+# shell alias does not work?:
+#alias gcc='/usr/bin/gcc-4.6'
+#alias g++='/usr/bin/g++-4.6'
 
-E=$(basename $URL)
-sh $MYMKR_PREFIX/src/$E \
+DESTDIR="${MYMKR_PREFIX}/opt/cuda"
+EXE=$(basename $URL)
+msg_info "running ${MYMKR_PREFIX}/src/${EXE} ..... ... .. . ."
+sh $MYMKR_PREFIX/src/$EXE \
  -silent \
  -toolkit \
- -toolkitpath=$MYMKR_PREFIX/local/$1 \
+ -toolkitpath=$DESTDIR || die 'INSTALL FAILED'
+msg_info ". . .. ... ..... finished"
+
+# remove gcc/g++ hack
+rm $MYMKR_PREFIX/bin/gcc $MYMKR_PREFIX/bin/g++
+
+# add to environment
+ENV="$MYMKR_PREFIX/mymkr/env.d/cuda.sh"
+touch "$ENV" || die "failed to access MYMKR environment file: $ENV"
+echo "# $1" > $ENV
+echo "export LD_LIBRARY_PATH=\$MYMKR_PREFIX/opt/cuda/lib64:\$MYMKR_PREFIX/opt/cuda/lib\$LD_LIBRARY_PATH" >> $ENV
+echo "export PATH=\$MYMKR_PREFIX/opt/cuda/bin:\$PATH" >> $ENV
 
 
 # Options:
@@ -31,13 +46,3 @@ sh $MYMKR_PREFIX/src/$E \
 #    -override                  : Overrides the installation checks (compiler, lib, etc)
 #    -kernel-source-path=<PATH> : Points to a non-default kernel source location
 #    -tmpdir <PATH>             : Use <PATH> as temporary directory - useful when /tmp is noexec
-
-# :TODO: add to environment:
-#* Please make sure your PATH includes /usr/local/cuda-5.5/bin
-#* Please make sure your LD_LIBRARY_PATH
-#*   for 32-bit Linux distributions includes /usr/local/cuda-5.5/lib
-#*   for 64-bit Linux distributions includes /usr/local/cuda-5.5/lib64:/lib
-#* OR
-#*   for 32-bit Linux distributions add /usr/local/cuda-5.5/lib
-#*   for 64-bit Linux distributions add /usr/local/cuda-5.5/lib64 and /lib
-#* to /etc/ld.so.conf and run ldconfig as root

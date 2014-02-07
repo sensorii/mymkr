@@ -1,6 +1,7 @@
 *.swp
 mymkr/conf
 mymkr/env
+mymkr/env.d/*.sh
 bin/
 docs/
 etc/
@@ -9,6 +10,7 @@ include/
 lib/
 libexec/
 openssl/
+opt/
 share/
 src/
 var/
