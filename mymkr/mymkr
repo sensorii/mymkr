@@ -8,12 +8,6 @@ CPUS=$(cat /proc/cpuinfo | egrep "^processor" | nl | tail -n1 | cut -f 1)
 JOBS="-j$CPUS"
 WGET='/usr/bin/wget --no-check-certificate'
 
-# override defaults if a configuration file is specified
-if [ ! -z "${2}" && -f "${2}" ]
-then
-	source "${2}"
-fi
-
 
 ########################################################################
 # core functions
@@ -59,9 +53,9 @@ mymkr_build_env ()
 		touch "$E" || die "failed to create MYMKR environment"
 		echo "MYMKR_PREFIX=$MYMKR_PREFIX" > $E
 		echo "export MYMKR_PREFIX=\$MYMKR_PREFIX" >> $E
-		echo "export PKG_CONFIG_PATH=\$MYMKR_PREFIX/lib/pkgconfig" >> $E
-		echo "export LD_LIBRARY_PATH=\$MYMKR_PREFIX/lib" >> $E
 		echo "export PATH=\$MYMKR_PREFIX/bin:\$PATH" >> $E
+		echo "export PKG_CONFIG_PATH=\$MYMKR_PREFIX/lib/pkgconfig" >> $E
+		echo "export LD_LIBRARY_PATH=\$MYMKR_PREFIX/lib:\$LD_LIBRARY_PATH" >> $E
 		echo "export MANPATH=\$MYMKR_PREFIX/share/man:/usr/share/man" >> $E
 		echo "export XDG_DATA_DIRS=\$MYMKR_PREFIX/share:\$XDG_DATA_DIRS" >> $E
 		echo "export PYTHONPATH=\${PYTHONPATH}:\$MYMKR_PREFIX/lib/python2.7/site-packages" >> $E
@@ -104,6 +98,17 @@ mymkr_show_doc ()
 }
 
 ########################################################################
+# MAIN
+########################################################################
+
+# override defaults if a configuration file is specified
+if [ ! -z "${2}" ]
+then
+	test -f "${2}" || die "configuration file not accessable: ${2}"
+	source "${2}"
+fi
+########################################################################
+
 mymkr_source 'fetch'
 mymkr_source 'common'
 mymkr_build_env
