@@ -27,7 +27,7 @@ rm $MYMKR_PREFIX/bin/gcc $MYMKR_PREFIX/bin/g++
 ENV="$MYMKR_PREFIX/mymkr/env.d/cuda.sh"
 touch "$ENV" || die "failed to access MYMKR environment file: $ENV"
 echo "# $1" > $ENV
-echo "export LD_LIBRARY_PATH=\$MYMKR_PREFIX/opt/cuda/lib64:\$MYMKR_PREFIX/opt/cuda/lib\$LD_LIBRARY_PATH" >> $ENV
+echo "export LD_LIBRARY_PATH=\$MYMKR_PREFIX/opt/cuda/lib64:\$MYMKR_PREFIX/opt/cuda/lib:\$LD_LIBRARY_PATH" >> $ENV
 echo "export PATH=\$MYMKR_PREFIX/opt/cuda/bin:\$PATH" >> $ENV
 
 
