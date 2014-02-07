@@ -3,15 +3,16 @@
 ########################################################################
 # CONFIGURATION
 ########################################################################
-if [ -z "${2}" ]
-then
-	MYMKR_PREFIX=~/.mymkr
-else
-	source "${2}"
-fi
-
+MYMKR_PREFIX=~/.mymkr
 CPUS=$(cat /proc/cpuinfo | egrep "^processor" | nl | tail -n1 | cut -f 1)
 JOBS="-j$CPUS"
+WGET='/usr/bin/wget --no-check-certificate'
+
+# override defaults if a configuration file is specified
+if [ ! -z "${2}" && -f "${2}" ]
+then
+	source "${2}"
+fi
 
 
 ########################################################################
@@ -28,15 +29,15 @@ color_white='\E[37m'
 color_off='\E[0m'
 
 msg_info () {
-	echo -e "${color_green}[MYMKR:INFO]${color_off} ${@}"
+	echo -e "${color_green}[MYMKR]${color_off} ${@}"
 }
 
 msg_warning () {
-	echo -e "${color_yellow}[MYMKR:WARNING]${color_off} ${@}"
+	echo -e "${color_yellow}[MYMKR]${color_off} ${@}"
 }
 
 msg_error () {
-	echo -e "${color_red}[MYMKR:ERROR]${color_off} ${@}"
+	echo -e "${color_red}[MYMKR]${color_off} ${@}"
 }
 
 die () {
