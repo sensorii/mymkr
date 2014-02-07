@@ -1,7 +1,5 @@
-_WGET='wget --no-check-certificate'
-fetch_wget $1 'https://www.dropbox.com/s/1xapc0zpcmm1gtb/maxcoin-cpuminer.zip'
+gitsrc $1 'https://github.com/Max-Coin/cpuminer.git'
 
-#export CFLAGS='-O3 -msse2 -mssse3 -Wall -march=native'
 export CFLAGS='-O3 -msse2 -Wall -march=native'
 _MAKE=1
 _MAKE_INSTALL=0
