@@ -3,6 +3,7 @@
 # $3: archive type - detected by default, argument enforces archive type to extract
 fetch_wget() {
 	URL=$2
+	test -z "${_EXTRACT_ARCHIVE}" && _EXTRACT_ARCHIVE=1
 
 	if [ -d $MYMKR_PREFIX/src/$1 ]
 	then
@@ -23,6 +24,8 @@ fetch_wget() {
 			then
 				# Reference: http://stackoverflow.com/a/965072
 				extension="${PKG##*.}"
+				(echo $PKG | egrep -q "\.tar\.gz\$") && extension='tgz'
+				(echo $PKG | egrep -q "\.tar\.bz2\$") && extension='tbz2'
 			else
 				extension="$3"
 			fi

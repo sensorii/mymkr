@@ -3,10 +3,10 @@
 common_autotools () {
 	test -z "${_MAKE}" && _MAKE=1
 	test -z "${_MAKE_INSTALL}" && _MAKE_INSTALL=1
+	test -z "${_MAKE_CLEAN}" && _MAKE_CLEAN=0
 	test -z "${_MAKE_ENV_OVERRIDE}" && _MAKE_ENV_OVERRIDE=0
 
  	cd $MYMKR_PREFIX/src/$1 || die "source dir does not exist?: $MYMKR_PREFIX/src/$1"
- 	#make clean
 
  	if [ -f 'bootstrap' ]
  	then
@@ -23,6 +23,11 @@ common_autotools () {
 		export LDFLAGS="-L${MYMKR_PREFIX}/lib ${LDFLAGS}"
 		export CPPFLAGS="-I$MYMKR_PREFIX/include ${CPPFLAGS}"
  		./configure --prefix=$MYMKR_PREFIX "${@:2}" || die 'configure failed'
+	fi
+
+	if [ $_MAKE_CLEAN -eq 1 ]
+	then
+		make clean
 	fi
 
 	OPTS=
