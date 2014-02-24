@@ -1,2 +1,3 @@
-gitsrc $1 https://github.com/mbuech/mcxnowapi.git
+# https://github.com/mbuech/mcxnowapi.git
+gitsrc $1 git@github.com:sensorii/mcxnowapi.git
 common_python $1
