@@ -3,6 +3,7 @@
 # $3: (optional) git tag or branch to checkout
 gitsrc() {
 	test -z "${_GIT_RESET}" && _GIT_RESET=0
+	test ! -z "${3}" && _GIT_TAG="${3}"
 
 	if [ ! -d $MYMKR_PREFIX/src/$1 ]
 	then
@@ -22,10 +23,10 @@ gitsrc() {
 		cd -
 	fi
 
-	if [ ! -z "$3" ]
+	if [ ! -z "${_GIT_TAG}" ]
 	then
 		cd $MYMKR_PREFIX/src/$1
-		git checkout $3 || die "git checkout ${3}"
+		git checkout -b ${_GIT_TAG} ${_GIT_TAG} || die "git checkout -b ${_GIT_TAG} ${_GIT_TAG}"
 		cd -
 	fi
 }
