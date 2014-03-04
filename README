@@ -3,12 +3,12 @@ environment and package installation location for compiled sources.  mymkr
 makes it easy to compile specific versions of software with specific features
 enabled or disaled and installs them in a configured directory enabling a
 developer to install and use multiple versions of the same software in their own
-user space.
+user space without polluting the system.
 
 INSTALLATION:
-) Make a directory where you want packages to be installed.  Example: /x
+) git clone mymkr
 
-) Place the mymkr directory within your new directory.
+) Put mymkr where you want it (the default is ~/.mymkr)
   Example: /x/mymkr
   :NOTE: This step is optional, the mymkr directory can live anywhere.
 
