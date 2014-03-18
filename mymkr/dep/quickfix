@@ -1,0 +1,16 @@
+g++
+automake
+libtool
+libxml2
+libxml2-dev
+libunittest++-dev
+
+# optional
+# ruby
+# ruby-dev
+# libmysqlclient-dev
+# libpq-dev
+# mysql-server
+# postgresql
+# xsltproc
+# python-dev

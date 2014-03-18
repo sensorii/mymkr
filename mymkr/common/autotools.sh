@@ -40,7 +40,7 @@ common_autotools () {
 	then
 		msg_warning "skipping make"
 	else
-		make $OPTS $JOBS || die 'make failed'
+		make $OPTS $JOBS PREFIX=$MYMKR_PREFIX || die 'make failed'
 	fi
 
  	if [ $_MAKE_INSTALL -eq 0 ]
