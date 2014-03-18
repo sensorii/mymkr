@@ -1,7 +1,7 @@
 URL='http://www.cryptopp.com/cryptopp562.zip'
 D=$MYMKR_PREFIX/src/$1
 _EXTRACT_ARCHIVE=0
-fetch_wget $1 $URL
+fetch_wget $URL
 
 test -d $D || mkdir $D || die 'make source dir failed'
 cd $D || die 'cd source dir failed'

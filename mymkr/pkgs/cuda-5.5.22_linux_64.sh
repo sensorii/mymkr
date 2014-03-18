@@ -1,8 +1,7 @@
 # Reference: http://askubuntu.com/a/387335
 _EXTRACT_ARCHIVE=0
 URL='http://developer.download.nvidia.com/compute/cuda/5_5/rel/installers/cuda_5.5.22_linux_64.run'
-E=$(basename $URL)
-fetch_wget $E $URL
+fetch_wget $URL
 
 # cuda installer needs gcc <= 4.7.2
 # temporarily hack gcc/g++ for this compile
