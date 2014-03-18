@@ -1,52 +1,49 @@
-# $1: package name
-# $2: URL
-# $3: archive type - detected by default, argument enforces archive type to extract
+# $1: URL
+# $2: archive type - detected by default, argument enforces archive type to extract
 fetch_wget() {
-	URL=$2
 	test -z "${_EXTRACT_ARCHIVE}" && _EXTRACT_ARCHIVE=1
+	URL=$1
+	PKG=$(basename $URL)
 
-	if [ -d $MYMKR_PREFIX/src/$1 ]
+	if [ -f $MYMKR_PREFIX/src/$PKG ]
 	then
 		msg_warning 'source exists, considering fetched'
 	else
 		cd $MYMKR_PREFIX/src
-		PKG=$(basename $URL)
-		if [ ! -f $PKG ]
-		then
-			$WGET "$URL" || die "wget failed: $URL"
-		fi
+		$WGET "$URL" || die "wget failed: $URL"
+	fi
 
-		if [ $_EXTRACT_ARCHIVE -eq 0 ]
+	if [ $_EXTRACT_ARCHIVE -eq 0 ]
+	then
+		msg_warning "skipping extract"
+	else
+		cd $MYMKR_PREFIX/src
+		if [ -z "$2" ]
 		then
-			msg_warning "skipping extract"
+			# Reference: http://stackoverflow.com/a/965072
+			extension="${PKG##*.}"
+			(echo $PKG | egrep -q "\.tar\.gz\$") && extension='tgz'
+			(echo $PKG | egrep -q "\.tar\.bz2\$") && extension='tbz2'
 		else
-			if [ -z "$3" ]
-			then
-				# Reference: http://stackoverflow.com/a/965072
-				extension="${PKG##*.}"
-				(echo $PKG | egrep -q "\.tar\.gz\$") && extension='tgz'
-				(echo $PKG | egrep -q "\.tar\.bz2\$") && extension='tbz2'
-			else
-				extension="$3"
-			fi
-
-			case ${extension} in
-				tgz|tar.gz)
-					tar -xzf $PKG || die "xtract archive failed"
-					;;
-
-				tbz2|tar.bz2)
-					tar -xjf $PKG || die "xtract archive failed"
-					;;
-
-				zip)
-					unzip $PKG || die "unzip failed"
-					;;
-
-				*)
-					die "unknown archive type: $extension"
-					;;
-			esac
+			extension="$2"
 		fi
+
+		case ${extension} in
+			tgz|tar.gz)
+				tar -xzf $PKG || die "xtract archive failed"
+				;;
+
+			tbz2|tar.bz2)
+				tar -xjf $PKG || die "xtract archive failed"
+				;;
+
+			zip)
+				unzip $PKG || die "unzip failed"
+				;;
+
+			*)
+				die "unknown archive type: $extension"
+				;;
+		esac
 	fi
 }
