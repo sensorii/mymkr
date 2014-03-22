@@ -1,5 +1,6 @@
 autoconf
-libtool
 automake
+libtool
 git
 subversion
+mercurial
