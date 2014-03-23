@@ -1,4 +1,4 @@
-ffmpeg < n2.1
+ffmpeg < n2.1 (n0.8.15)
 
 # veejay-server
 libgtk2.0-dev

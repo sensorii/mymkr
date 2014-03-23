@@ -1,7 +1,6 @@
 # compiling this specifically for veejay
-# 0.8.12 was used successfully before, 0.8.14 suggested on a newsgroup
-#_GIT_TAG='n0.8.12'
-_GIT_TAG='n0.8.14'
+# 0.8.12 was used successfully before, 0.8.14 suggested on a newsgroup, 0.8.15 mentioned in veejay code
+_GIT_TAG='n0.8.15'
 
 # veejay-server fails with:
 # vj-el.c: In function 'detect_pixel_format_with_ffmpeg':
@@ -17,7 +16,6 @@ _GIT_TAG='n0.8.14'
 # too far, fails configure version check:
 #_GIT_TAG='n2.1'
 
-#_GIT_RESET=1
 gitsrc $1 git://source.ffmpeg.org/ffmpeg.git
 
 _MAKE_CLEAN=1
