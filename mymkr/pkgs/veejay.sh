@@ -41,3 +41,10 @@ common_autotools "$D/veejay-client" LIBS='-lX11 -lm' \
 ########################################################################
 msg_info 'making veejay utils'
 common_autotools "$D/veejay-utils" || die 'compile/install veejay-utils failed'
+
+
+########################################################################
+# sendVIMS (requires puredata)
+########################################################################
+# msg_info 'making sendVIMS'
+# common_autotools "$D/sendVIMS" || die 'compile/install sendVIMS failed'
