@@ -128,15 +128,16 @@ then
 	exit 1
 fi
 
+# :TODO:?: change this to use meta directory
 # if package has a directory, install all pkgs inside it first
-if [ -d "$D/pkgs/$1" ]
-then
-	#die (':TODO: implement package defined as directory')
-	for x in $(ls $D/pkgs/$1)
-	do
-		msg_info ":TODO: mk $x"
-	done
-fi
+# :TODO: if [ -d "$D/pkgs/$1" ]
+# :TODO: then
+# :TODO: 	#die (':TODO: implement package defined as directory')
+# :TODO: 	for x in $(ls $D/pkgs/$1)
+# :TODO: 	do
+# :TODO: 		msg_info ":TODO: mk $x"
+# :TODO: 	done
+# :TODO: fi
 
 # if package has an install script
 if [ -f "$D/pkgs/$1.sh" ]
@@ -147,14 +148,5 @@ then
 else
 	die "package not found: $1"
 fi
-
-# if package's install script is inside a directory
-# (indicating that the package is usually only installed as a dependency of
-# another package but still provide means to compile it directly)
-#$P=$(find $D/pkgs -type f -name $1.sh)
-#if [ ! -z "$P" ]
-#then
-#fi
-
 
 exit 0

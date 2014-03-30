@@ -27,6 +27,7 @@ common_autotools () {
 
 	if [ $_MAKE_CLEAN -eq 1 ]
 	then
+		msg_warning "make clean"
 		make clean
 	fi
 

@@ -9,12 +9,6 @@ gitsrc() {
 	then
 		msg_info "$1 source dir does not exist, git clone'ing..."
 		git clone $2 $MYMKR_PREFIX/src/$1 || die "git clone failed"
-		if [ ! -z "${_GIT_TAG}" ]
-		then
-			cd $MYMKR_PREFIX/src/$1
-			git checkout -b ${_GIT_TAG} ${_GIT_TAG} || die "git checkout -b ${_GIT_TAG} ${_GIT_TAG}"
-			cd -
-		fi
 	else
 		msg_info "$1 source dir exists, git pull'ing..."
 		cd $MYMKR_PREFIX/src/$1
@@ -26,14 +20,15 @@ gitsrc() {
 			git reset --hard HEAD
 		fi
 
-		if [ ! -z "${_GIT_TAG}" ]
-		then
-			# http://stackoverflow.com/a/12054269
-			git pull origin ${_GIT_TAG} || die 'git pull failed'
-		else
-			git pull || die 'git pull failed'
-		fi
+		git checkout -f master
+		git pull || die 'git pull failed'
+	fi
 
+	if [ ! -z "${_GIT_TAG}" ]
+	then
+		msg_info "git checkout: ${_GIT_TAG}"
+		cd $MYMKR_PREFIX/src/$1
+		git checkout -f ${_GIT_TAG} || die "git checkout -f ${_GIT_TAG}"
 		cd -
 	fi
 }
