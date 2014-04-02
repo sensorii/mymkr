@@ -2,15 +2,15 @@
 # $2: archive type - detected by default, argument enforces archive type to extract
 fetch_wget() {
 	test -z "${_EXTRACT_ARCHIVE}" && _EXTRACT_ARCHIVE=1
-	URL=$1
-	PKG=$(basename $URL)
+	_URL=$1
+	_PKG=$(basename $_URL)
 
-	if [ -f $MYMKR_PREFIX/src/$PKG ]
+	if [ -f $MYMKR_PREFIX/src/$_PKG ]
 	then
 		msg_warning 'source exists, considering fetched'
 	else
 		cd $MYMKR_PREFIX/src
-		$WGET "$URL" || die "wget failed: $URL"
+		$WGET "$_URL" || die "wget failed: $_URL"
 	fi
 
 	if [ $_EXTRACT_ARCHIVE -eq 0 ]
@@ -21,24 +21,24 @@ fetch_wget() {
 		if [ -z "$2" ]
 		then
 			# Reference: http://stackoverflow.com/a/965072
-			extension="${PKG##*.}"
-			(echo $PKG | egrep -q "\.tar\.gz\$") && extension='tgz'
-			(echo $PKG | egrep -q "\.tar\.bz2\$") && extension='tbz2'
+			extension="${_PKG##*.}"
+			(echo $_PKG | egrep -q "\.tar\.gz\$") && extension='tgz'
+			(echo $_PKG | egrep -q "\.tar\.bz2\$") && extension='tbz2'
 		else
 			extension="$2"
 		fi
 
 		case ${extension} in
 			tgz|tar.gz)
-				tar -xzf $PKG || die "xtract archive failed"
+				tar -xzf $_PKG || die "xtract archive failed"
 				;;
 
 			tbz2|tar.bz2)
-				tar -xjf $PKG || die "xtract archive failed"
+				tar -xjf $_PKG || die "xtract archive failed"
 				;;
 
 			zip)
-				unzip $PKG || die "unzip failed"
+				unzip $_PKG || die "unzip failed"
 				;;
 
 			*)
