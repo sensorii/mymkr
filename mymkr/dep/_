@@ -1,6 +1,7 @@
 autoconf
 automake
 libtool
+gcc
 git
 subversion
 mercurial
