@@ -103,19 +103,14 @@ mymkr_show_doc ()
 # MAIN
 ########################################################################
 
-# override defaults if a configuration file is specified
-if [ ! -z "${2}" ]
-then
-	test -f "${2}" || die "configuration file not accessable: ${2}"
-	source "${2}"
-fi
-########################################################################
-
 mymkr_source 'fetch'
 mymkr_source 'common'
 mymkr_build_env
 D="$MYMKR_PREFIX/mymkr"
 PKGS=$(mymkr_get_pkgs "$D/pkgs/")
+
+test -f "$D/profiles/current.sh" && source "$D/profiles/current.sh"
+test ! -f "$D/profiles/current.sh" && source "$D/profiles/default.sh"
 
 # enforce proper paramaters
 if [ -z "$1" ]
