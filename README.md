@@ -2,3 +2,61 @@ mymkr
 =====
 
 "My Maker" -- Simple source compiler assistant written in BASH
+
+
+mymkr is a set of bash scripts for UNIX systems that create and managage a
+custom development environment and package installation location for compiled
+sources.  mymkr can make it easier to install specific versions of software with
+specific features configured and using custom dependencies. Packages are
+installed into a configured "mymkr" directory enabling a developer to more
+cleanly install and use multiple versions of the same software in their own user
+space without polluting the host system.
+
+To use mymkr to compile a package, a shell script is made for that package with
+the commands to download, compile, and install the package.  mymkr includes
+helper functions for common operations for fetching, building, installing and
+other abstractions so that in many cases a package's mymkr script may be as
+short as two lines.
+
+### Example:
+use mymkr to install the latest liblo library from source:
+```
+mymkr liblo
+```
+
+The liblo mymkr script:
+```
+gitsrc $1 git://git.code.sf.net/p/liblo/git
+common_autotools $1
+```
+
+### Disclaimer
+Orginally developed for use on ubuntu (debian-based) systems, so there may be
+some things related to that but is not restricted to any OS flavor.
+
+A bit rough around the edges... mymkr and the included package scripts have been
+made over the course of several years (and versions of ubuntu) on a specific
+as-needed basis to do exactly what I wanted them to do and they may not work
+exactly as you want them too, so write your own package files.
+
+### How it works
+The magick is done by installing packages into a "prefix" directory and using
+standard environment variables sourced into your bash environment to understand
+this location.  It could be thought of as a /usr/local/ type of directory in
+your homedir (or wherever you want it).
+
+
+### Installation:
+1. git clone https://github.com/sensorii/mymkr
+
+2. Put mymkr where you want it (the default is ~/.mymkr)
+  Example: /x/mymkr
+
+3. Edit mymkr/mymaker.env, change MYMKR_PREFIX to the location of your directory.
+  Example: MYMKR_PREFIX=/x
+
+4. To use the packages installed in the directory, source the environment file:
+  $ source /x/mymkr/mymaker.env
+
+5. If you want automatic sourcing, put this line in your ~/.bashrc:
+  source /x/mymkr/mymaker.env
