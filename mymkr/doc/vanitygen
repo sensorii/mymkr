@@ -1,0 +1,5 @@
+example usage:
+vanitygen -t 4 -q -k -i -s /dev/urandom -f ./patterns.txt -o ./matches.txt
+
+-t: number of threads
+-q: be quiet so private keys aren't shown in the terminal

@@ -1,0 +1,9 @@
+build-essential
+autoconf
+automake
+libtool
+gcc
+g++
+git
+subversion
+mercurial

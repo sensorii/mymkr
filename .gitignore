@@ -1,0 +1,17 @@
+*.swp
+mymkr/conf
+mymkr/env
+mymkr/env.d/*.sh
+bin/
+docs/
+etc/
+home/
+include/
+lib/
+libexec/
+openssl/
+opt/
+share/
+src/
+var/
+mymkr/profiles/current.sh

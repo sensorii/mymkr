@@ -1,0 +1,33 @@
+ffmpeg < n2.1 (n0.8.15)
+
+# veejay-server
+libgtk2.0-dev
+libx11-dev
+libxml2-dev
+libxinerama-dev
+libsdl1.2-dev
+#? libjack-dev
+libglib2.0-dev
+libquicktime-dev
+libmjpegtools-dev
+#? libjpeg62-dev  ? removes libjpeg8-dev ???
+libfreetype6-dev
+#? libdv4-dev
+libdirectfb-dev
+liblo-dev
+
+# veejay-client
+libglade2-dev
+
+# libunicap
+intltool
+libraw1394-dev
+libv4l-dev
+
+# ucview
+# libunicapgtk
+# libucil
+libtheora-dev
+libvorbis-dev
+libxv-dev
+libgconf2-dev

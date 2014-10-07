@@ -1,0 +1,147 @@
+#!/bin/bash
+
+########################################################################
+# CONFIGURATION
+########################################################################
+MYMKR_PREFIX=~/.mymkr
+CPUS=$(cat /proc/cpuinfo | egrep "^processor" | nl | tail -n1 | cut -f 1)
+JOBS="-j$CPUS"
+WGET='/usr/bin/wget --no-check-certificate'
+
+
+########################################################################
+# core functions
+########################################################################
+color_black='\E[30m'
+color_red='\E[31m'
+color_green='\E[32m'
+color_yellow='\E[33m'
+color_blue='\E[34m'
+color_magenta='\E[35m'
+color_cyan='\E[36m'
+color_white='\E[37m'
+color_off='\E[0m'
+
+msg_info () {
+	echo -e "${color_green}[MYMKR]${color_off} ${@}"
+}
+
+msg_warning () {
+	echo -e "${color_yellow}[MYMKR]${color_off} ${@}"
+}
+
+msg_error () {
+	echo -e "${color_red}[MYMKR]${color_off} ${@}"
+}
+
+die () {
+	msg_error ${@}
+	exit 1
+}
+
+# build/install MYMKR directory
+mymkr_build_env ()
+{
+	test -z "$MYMKR_PREFIX" && die "MYMKR_PREFIX is not set"
+	test ! -d $MYMKR_PREFIX && mkdir $MYMKR_PREFIX
+	test ! -d $MYMKR_PREFIX/src && mkdir $MYMKR_PREFIX/src
+	test ! -d $MYMKR_PREFIX/bin && mkdir $MYMKR_PREFIX/bin
+	test ! -d $MYMKR_PREFIX/mymkr/env.d && mkdir $MYMKR_PREFIX/mymkr/env.d
+	E="$MYMKR_PREFIX/mymkr/env"
+	if [ ! -f "$E" ]
+	then
+		msg_info "MYMKR environment definition ($E) does no exist, creating"
+		touch "$E" || die "failed to create MYMKR environment"
+		echo "MYMKR_PREFIX=$MYMKR_PREFIX" > $E
+		echo "export MYMKR_PREFIX=\$MYMKR_PREFIX" >> $E
+		echo "export PATH=\$MYMKR_PREFIX/bin:\$PATH" >> $E
+		echo "export PKG_CONFIG_PATH=\$MYMKR_PREFIX/lib/pkgconfig" >> $E
+		echo "export LD_LIBRARY_PATH=\$MYMKR_PREFIX/lib:\$LD_LIBRARY_PATH" >> $E
+		echo "export MANPATH=\$MYMKR_PREFIX/share/man:/usr/share/man" >> $E
+		echo "export XDG_DATA_DIRS=\$MYMKR_PREFIX/share:\$XDG_DATA_DIRS" >> $E
+		echo "export PYTHONPATH=\${PYTHONPATH}:\$MYMKR_PREFIX/lib/python2.7/site-packages" >> $E
+		echo "for x in \$(find \$MYMKR_PREFIX/mymkr/env.d -mindepth 1 | egrep \"\\.sh$\"); do source \$x; done" >> $E
+		grep "$E" ~/.bashrc || echo "source $E" >> ~/.bashrc
+	fi
+	source $E
+}
+
+# $1: a directory containing bash files to source (must be a subdirectory of mymkr/)
+mymkr_source ()
+{
+	D="$MYMKR_PREFIX/mymkr"
+	for x in $(find $D/$1 -mindepth 1 | egrep "\.sh$")
+	do
+		# msg_info "source: $1/$(basename $x)"
+		source $x
+	done
+}
+
+# $1: a directory of MYMKR package definitions
+mymkr_get_pkgs ()
+{
+	test -z "$1" && die "get_pkgs: invalid paramaters"
+	for x in $(find $1 -mindepth 1)
+	do
+		basename $x | sed -e 's/.sh$//' 
+	done
+}
+
+# $1: package name corresponding to a package in mymkr/pkgs
+mymkr_show_doc ()
+{
+	F="$MYMKR_PREFIX/mymkr/doc/$1"
+	if [ -f $F ]
+	then
+		echo '--- :NOTES: ------------------------------------------------------------'
+		cat $F
+		echo '------------------------------------------------------------------------'
+	fi
+}
+
+########################################################################
+# MAIN
+########################################################################
+
+mymkr_source 'fetch'
+mymkr_source 'common'
+mymkr_build_env
+D="$MYMKR_PREFIX/mymkr"
+PKGS=$(mymkr_get_pkgs "$D/pkgs/")
+
+test -f "$D/profiles/current.sh" && source "$D/profiles/current.sh"
+test ! -f "$D/profiles/current.sh" && source "$D/profiles/default.sh"
+
+# enforce proper paramaters
+if [ -z "$1" ]
+then
+	echo "USAGE: $0 <package> [config file]"
+	echo -e "[config file] optional custom settings file"
+	echo -e "<package> is one of:"
+	#echo -e "\tclean   (cleans build related files)"
+	for x in $PKGS; do echo -e "\t$x"; done
+	exit 1
+fi
+
+# :TODO:?: change this to use meta directory
+# if package has a directory, install all pkgs inside it first
+# :TODO: if [ -d "$D/pkgs/$1" ]
+# :TODO: then
+# :TODO: 	#die (':TODO: implement package defined as directory')
+# :TODO: 	for x in $(ls $D/pkgs/$1)
+# :TODO: 	do
+# :TODO: 		msg_info ":TODO: mk $x"
+# :TODO: 	done
+# :TODO: fi
+
+# if package has an install script
+if [ -f "$D/pkgs/$1.sh" ]
+then
+	msg_info "source $D/pkgs/$1.sh"
+	source "$D/pkgs/$1.sh" && msg_info "success: $1"
+	mymkr_show_doc $1
+else
+	die "package not found: $1"
+fi
+
+exit 0
