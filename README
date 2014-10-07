@@ -3,7 +3,7 @@ environment and package installation location for compiled sources.  mymkr
 makes it easy to compile specific versions of software with specific features
 enabled or disaled and installs them in a configured directory enabling a
 developer to install and use multiple versions of the same software in their own
-user space without polluting the system.
+user space without polluting the host system.
 
 INSTALLATION:
 ) git clone mymkr
