@@ -84,11 +84,10 @@ mymkr_source ()
 # $1: a directory of MYMKR package definitions
 mymkr_get_pkgs ()
 {
+	cd $1
 	test -z "$1" && die "get_pkgs: invalid paramaters"
-	for x in $(find $1 -mindepth 1)
-	do
-		basename $x | sed -e 's/.sh$//' 
-	done
+	find ./ -type f | egrep -v "^./old/" | sed -e 's/.sh$//' -e 's/^\.\///'
+	cd - > /dev/null
 }
 
 # $1: package name corresponding to a package in mymkr/pkgs
