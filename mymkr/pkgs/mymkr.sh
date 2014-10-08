@@ -3,6 +3,11 @@
 # install mymkr in bin directory for easy usage
 ln -sf "${MYMKR_PREFIX}/mymkr/mymkr" "${MYMKR_PREFIX}/bin/mymkr"
 
+# add to ~/.bashrc if not already there
+E="$MYMKR_PREFIX/mymkr/env"
+grep "$E" ~/.bashrc || \
+	(echo "source $E" >> ~/.bashrc && msg_info "Added 'source $E' to ~/.bashrc")
+
 # set profile
 if [ ! -z "${2}" ]
 then
