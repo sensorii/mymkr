@@ -51,14 +51,12 @@ want it).
 ### Installation:
 1. git clone https://github.com/sensorii/mymkr
 
-2. Put mymkr where you want it (the default is ~/.mymkr)
-  Example: /x/mymkr
+2. move the mymkr directory where you want it.  Example: `mv mymkr ~/.mymkr`
 
-3. Edit mymkr/mymaker.env, change MYMKR_PREFIX to the location of your directory.
-  Example: MYMKR_PREFIX=/x
+3. use mymkr to install mymkr.  Example: `~/.mymkr/mymkr/mymkr mymkr`
 
-4. To use the packages installed in the directory, source the environment file:
-  $ source /x/mymkr/mymaker.env
+4. either restart your bash shell, or source ~/.bashrc to get the MYMKR environment in your current shell
 
-5. If you want automatic sourcing, put this line in your ~/.bashrc:
-  source /x/mymkr/mymaker.env
+5. install stuff. Example: `mymkr cgminer`
+
+6. if any binaries were installed, they are now included in your $PATH, so run them as you would any other command. Example: `cgminer`
