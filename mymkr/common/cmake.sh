@@ -16,7 +16,7 @@ common_cmake() {
 
 	test -d $1.build || mkdir $1.build
 	cd $MYMKR_PREFIX/src/$1.build
-	cmake -D CMAKE_INSTALL_PREFIX=$MYMKR_PREFIX ${@:2} ../$1
+	cmake -D CMAKE_INSTALL_PREFIX=$MYMKR_PREFIX ${@:2} $MYMKR_PREFIX/src/$1
 
 	OPTS=
 	if [ $_MAKE_ENV_OVERRIDE -eq 1 ]
